@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import glob
 import os
+import subprocess
 import ruamel.yaml
 from ruamel.yaml import YAML
 import paramiko
@@ -74,25 +75,30 @@ def command_os(script_path, parameter, path_dat=None):
     if parameter == 'haproxy':
         logging.info(f"Command HAPROXY UP {script_path}")
         command = f"bash {script_path} haproxy up"
-        exit_code = os.system(command)
-        if exit_code != 0:
-            logging.error(f"Command failed: {command}")
-            return False
-        else:
-            logging.info(f"Command executed successfully: {command}")
-            return True
     elif parameter == 'deploy':
-        logging.info(f"Command DEPLOY START {script_path}")
-        command = f"bash {script_path} dt deploy --init --package='{path_dat}'"
-        exit_code = os.system(command)
-        if exit_code != 0:
-            logging.error(f"Command failed: {command}")
-            return False
-        else:
-            logging.info(f"Command executed successfully: {command}")
-            return True
+        logging.info(f"Command DEPLOY UP {script_path}")
+        f"bash {script_path} dt deploy --init --package='{path_dat}'"
     else:
+        logging.error(f"Invalid parameter provided {parameter}")
         return False
+
+    # Выполнение команды по перезагрузке haproxy или deploy
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    output, error = process.communicate()
+    exit_code = process.returncode
+
+    # Логирование вывода команды
+    if output:
+        logging.info(f"Command output:\n{output}")
+    if error:
+        logging.error(f"Command error:\n{error}")
+
+    if exit_code != 0:
+        logging.error(f"Command failed: {command}\n{error}")
+        return False
+    else:
+        logging.info(f"Command executed successfully: {command}\n{output}")
+        return True
 
 
 def check_file_exists(file_path):
