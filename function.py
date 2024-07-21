@@ -50,23 +50,40 @@ def command_os(script_path, parameter, path_dat=None):
     if parameter == 'haproxy':
         command = f"bash {script_path} haproxy up"
         logging.info(f"Command HAPROXY UP {script_path}")
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        output, error = process.communicate()
+        exit_code = process.returncode
+
+        if exit_code != 0:
+            logging.error(f"Command failed: {command}\n{error}")
+            return False
+        else:
+            logging.info(f"Command executed successfully: {command}\n{output}")
+            return True
+
     elif parameter == 'deploy':
-        command = f"bash {script_path} dt deploy --init --package='{path_dat}'"
-        logging.info(f"Command DEPLOY UP {script_path}")
+        if path_dat is None:
+            logging.error(f"Path dat is not provided for 'deploy' parameter")
+            return False
+
+        files = glob.glob(path_dat)
+        for file in files:
+            command = f"bash {script_path} dt deploy --init --package='{file}'"
+            logging.info(f"Command DEPLOY UP {script_path}")
+            process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output, error = process.communicate()
+            exit_code = process.returncode
+
+            if exit_code != 0:
+                logging.error(f"Command failed: {command}\n{error}")
+                return False
+            else:
+                logging.info(f"Command executed successfully: {command}\n{output}")
+        return True
+
     else:
         logging.error(f"Invalid parameter provided {parameter}")
         return False
-
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    output, error = process.communicate()
-    exit_code = process.returncode
-
-    if exit_code != 0:
-        logging.error(f"Command failed: {command}\n{error}")
-        return False
-    else:
-        logging.info(f"Command executed successfully: {command}\n{output}")
-        return True
 
 
 def check_file_exists(file_path):
