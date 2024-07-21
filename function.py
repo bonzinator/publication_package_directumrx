@@ -49,7 +49,7 @@ def command_os(script_path, parameter, path_dat=None):
     """
     if parameter == 'haproxy':
         command = f"bash {script_path} haproxy up"
-        logging.info(f"Command HAPROXY UP {script_path}")
+        logging.info(f"Command HAPROXY UP {command}")
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output, error = process.communicate()
         exit_code = process.returncode
@@ -69,7 +69,7 @@ def command_os(script_path, parameter, path_dat=None):
         files = glob.glob(path_dat)
         for file in files:
             command = f"bash {script_path} dt deploy --init --package='{file}'"
-            logging.info(f"Command DEPLOY UP {script_path}")
+            logging.info(f"Command DEPLOY UP {command}")
             process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             output, error = process.communicate()
             exit_code = process.returncode
