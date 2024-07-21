@@ -35,9 +35,7 @@ def main():
     if not f.update_yaml(file_path=config_yml_path,
                          host_fqdn=new_host_fqdn,
                          protocol=new_protocol,
-                         ssl_cert=ssl_cert,
-                         dns_name=old_host_fqdn,
-                         extra_host=new_host_fqdn):
+                         ssl_cert=ssl_cert):
         print("Convert yaml finished with error")
         sys.exit(1)
 
@@ -61,9 +59,7 @@ def main():
     if not f.update_yaml(file_path=config_yml_path,
                          host_fqdn=old_host_fqdn,
                          protocol=old_protocol,
-                         ssl_cert=ssl_cert,
-                         dns_name=old_host_fqdn,
-                         extra_host=new_host_fqdn):
+                         ssl_cert=ssl_cert):
         print("Convert yaml finished with error")
         sys.exit(1)
 

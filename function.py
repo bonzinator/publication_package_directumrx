@@ -86,7 +86,7 @@ def check_file_exists(file_path):
     return bool(exists)
 
 
-def update_yaml(file_path, host_fqdn, protocol, ssl_cert, dns_name, extra_host):
+def update_yaml(file_path, host_fqdn, protocol, ssl_cert):
     """
     Обновляет параметры в YAML файле.
     Логирует все этапы и ошибки.
@@ -113,10 +113,6 @@ def update_yaml(file_path, host_fqdn, protocol, ssl_cert, dns_name, extra_host):
                 haproxy_config['ssl_cert'] = ssl_cert
                 haproxy_config['https_port'] = '{{ https_port }}'
                 logging.info(f"Updated SungeroHaproxy: ssl_cert={ssl_cert}, https_port='{{ https_port }}'")
-
-        # if 'extra_hosts' in data:
-        #     data['extra_hosts'][dns_name] = extra_host
-        #     logging.info(f"Updated extra_hosts: {dns_name}={extra_host}")
 
         with open(file_path, 'w') as file:
             yaml.dump(data, file)
