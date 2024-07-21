@@ -105,13 +105,18 @@ def update_yaml(file_path, host_fqdn, protocol, ssl_cert, dns_name, extra_host):
 
         if 'services_config' in data and 'SungeroHaproxy' in data['services_config']:
             haproxy_config = data['services_config']['SungeroHaproxy']
-            haproxy_config['ssl_cert'] = ssl_cert
-            haproxy_config['https_port'] = '{{ https_port }}'
-            logging.info(f"Updated SungeroHaproxy: ssl_cert={ssl_cert}, https_port='{{ https_port }}'")
 
-        if 'extra_hosts' in data:
-            data['extra_hosts'][dns_name] = extra_host
-            logging.info(f"Updated extra_hosts: {dns_name}={extra_host}")
+            if 'ssl_cert' in haproxy_config:
+                haproxy_config.pop('ssl_cert')
+                logging.info(f"Updated ssl_cert: {haproxy_config}. Variable ssl_cert was deleted")
+            else:
+                haproxy_config['ssl_cert'] = ssl_cert
+                haproxy_config['https_port'] = '{{ https_port }}'
+                logging.info(f"Updated SungeroHaproxy: ssl_cert={ssl_cert}, https_port='{{ https_port }}'")
+
+        # if 'extra_hosts' in data:
+        #     data['extra_hosts'][dns_name] = extra_host
+        #     logging.info(f"Updated extra_hosts: {dns_name}={extra_host}")
 
         with open(file_path, 'w') as file:
             yaml.dump(data, file)
