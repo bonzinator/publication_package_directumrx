@@ -60,10 +60,6 @@ def command_os(script_path, parameter, path_dat=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     output, error = process.communicate()
     exit_code = process.returncode
-    if output:
-        logging.info(f"Command output:\n{output}")
-    if error:
-        logging.error(f"Command error:\n{error}")
 
     if exit_code != 0:
         logging.error(f"Command failed: {command}\n{error}")
